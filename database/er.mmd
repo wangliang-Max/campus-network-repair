@@ -1,0 +1,79 @@
+erDiagram
+    sys_role ||--o{ sys_user : "1:N 角色"
+    sys_user ||--o{ repair_order : "1:N 报障人提交"
+    sys_user ||--o{ repair_handle : "1:N 技术员处理"
+    sys_user ||--o{ status_log : "1:N 操作日志"
+    sys_user ||--o{ confirm_record : "1:N 确认评价"
+    device ||--o{ repair_order : "1:N 故障设备"
+    repair_order ||--o{ repair_handle : "1:N 处理记录"
+    repair_order ||--o{ status_log : "1:N 状态流转"
+    repair_order ||--o{ confirm_record : "0..N 验收确认"
+
+    sys_role {
+        bigint id PK
+        varchar(20) role_code UK
+        varchar(50) role_name
+    }
+
+    sys_user {
+        bigint id PK
+        varchar(50) username UK
+        varchar(100) password
+        varchar(50) real_name
+        varchar(20) phone
+        bigint role_id FK
+        tinyint enabled
+        datetime created_at
+    }
+
+    device {
+        bigint id PK
+        varchar(30) device_code UK
+        varchar(100) device_name
+        varchar(50) room_name
+        varchar(20) status
+        varchar(200) remark
+        datetime created_at
+    }
+
+    repair_order {
+        bigint id PK
+        varchar(30) order_no UK
+        bigint reporter_id FK
+        bigint device_id FK
+        varchar(500) fault_desc
+        varchar(10) priority
+        varchar(20) status
+        int version
+        datetime created_at
+        datetime updated_at
+    }
+
+    repair_handle {
+        bigint id PK
+        bigint order_id FK
+        bigint handler_id FK
+        varchar(20) action
+        varchar(500) content
+        datetime created_at
+    }
+
+    status_log {
+        bigint id PK
+        bigint order_id FK
+        varchar(20) from_status
+        varchar(20) to_status
+        bigint operator_id FK
+        varchar(200) remark
+        datetime created_at
+    }
+
+    confirm_record {
+        bigint id PK
+        bigint order_id FK
+        bigint confirm_by FK
+        varchar(20) result
+        tinyint score
+        varchar(500) comment
+        datetime created_at
+    }
