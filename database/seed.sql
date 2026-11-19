@@ -230,7 +230,8 @@ INSERT INTO status_log (id, order_id, from_status, to_status, operator_id, remar
 (49, 17, 'PENDING',         'INVESTIGATING',  4, '技术员受理报修单',              '2026-11-14 16:10:00'),
 (50, 17, 'INVESTIGATING',   'REPAIRING',      4, '确认故障，开始维修',            '2026-11-14 16:30:00'),
 (51, 17, 'REPAIRING',       'PENDING_CONFIRM',4, '修复完成，等待报障人确认',      '2026-11-14 18:00:00'),
-(52, 17, 'PENDING_CONFIRM', 'CLOSED',         9, '报障人确认修复完成',            '2026-11-15 08:30:00');
+(52, 17, 'PENDING_CONFIRM', 'CLOSED',         9, '报障人确认修复完成',            '2026-11-15 08:30:00'),
+(53, 12, NULL,              'PENDING',       11, '报障人提交报修单',              '2026-11-05 10:15:00');
 
 INSERT INTO confirm_record (id, order_id, confirm_by, result, score, comment, created_at) VALUES
 (6, 13, 5, 'PASS', 5, '处理很快，网络恢复正常', '2026-11-07 09:00:00'),
