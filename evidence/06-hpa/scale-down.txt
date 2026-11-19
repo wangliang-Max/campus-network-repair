@@ -1,0 +1,5 @@
+NAME              REFERENCE                TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 2%/60%   2         4         2          28m
+NAME                           READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg   1/1     Running   0          21m
+g18-backend-58c86794dc-fvb88   1/1     Running   0          22m
