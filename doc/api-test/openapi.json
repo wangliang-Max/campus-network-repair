@@ -1,0 +1,1520 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "校园网络与机房故障报修平台 API",
+    "description": "JavaWeb 期末综合项目 T05 · 后端接口文档",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/devices/{id}": {
+      "get": {
+        "tags": [
+          "机房设备管理"
+        ],
+        "summary": "设备详情",
+        "operationId": "detail_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultDeviceVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "机房设备管理"
+        ],
+        "summary": "修改设备（管理员）",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceSaveDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultDeviceVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "机房设备管理"
+        ],
+        "summary": "删除设备（管理员，存在报修记录时拒绝）",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repair-orders": {
+      "get": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "报修单分页查询（报障人只能看自己的单）",
+        "operationId": "page",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RepairOrderQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPageResultRepairOrderVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "提交报修单（同一设备存在未关闭单据时拒绝）",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepairOrderCreateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultRepairOrderVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repair-orders/{id}/supplement": {
+      "post": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "报障人补充故障信息：待补充 -> 待受理",
+        "operationId": "supplement",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupplementDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultRepairOrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repair-orders/{id}/start-repair": {
+      "post": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "开始维修：排查中 -> 修复中",
+        "operationId": "startRepair",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderActionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultRepairOrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repair-orders/{id}/return-info": {
+      "post": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "无法复现退回补充：排查中 -> 待补充",
+        "operationId": "returnInfo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderActionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultRepairOrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repair-orders/{id}/finish": {
+      "post": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "修复完成：修复中 -> 待确认",
+        "operationId": "finish",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderActionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultRepairOrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repair-orders/{id}/confirm": {
+      "post": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "报障人验收：PASS 关闭工单 / FAIL 退回返工",
+        "operationId": "confirm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultRepairOrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repair-orders/{id}/accept": {
+      "post": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "受理报修单：待受理 -> 排查中",
+        "operationId": "accept",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderActionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultRepairOrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/devices": {
+      "get": {
+        "tags": [
+          "机房设备管理"
+        ],
+        "summary": "设备分页查询（支持机房、状态、关键字）",
+        "operationId": "page_1",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/DeviceQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPageResultDeviceVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "机房设备管理"
+        ],
+        "summary": "新增设备（管理员）",
+        "operationId": "create_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceSaveDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultDeviceVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "报障人自助注册，成功后直接返回 JWT",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultLoginVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "登录，返回 JWT",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultLoginVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stats/overview": {
+      "get": {
+        "tags": [
+          "统计报表"
+        ],
+        "summary": "统计概览：总量、未关闭数、平均修复时长、按机房/状态分组",
+        "operationId": "overview",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultStatsOverviewVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repair-orders/{id}": {
+      "get": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "报修单详情（含状态轨迹、处理记录、验收记录、可执行动作）",
+        "operationId": "detail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultRepairOrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repair-orders/my": {
+      "get": {
+        "tags": [
+          "报修单管理"
+        ],
+        "summary": "我的报修列表",
+        "operationId": "my",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultListRepairOrderVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": [
+          "健康检查"
+        ],
+        "summary": "健康检查",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultMapStringString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/devices/rooms": {
+      "get": {
+        "tags": [
+          "机房设备管理"
+        ],
+        "summary": "机房列表（用于筛选项）",
+        "operationId": "rooms",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultListString"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DeviceSaveDTO": {
+        "required": [
+          "deviceCode",
+          "deviceName",
+          "roomName"
+        ],
+        "type": "object",
+        "properties": {
+          "deviceCode": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string",
+            "description": "设备编号，唯一"
+          },
+          "deviceName": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "roomName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "status": {
+            "pattern": "NORMAL|FAULT|REPAIRING",
+            "type": "string",
+            "description": "设备状态，默认 NORMAL"
+          },
+          "remark": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          }
+        },
+        "description": "设备新增或修改请求"
+      },
+      "DeviceVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deviceCode": {
+            "type": "string"
+          },
+          "deviceName": {
+            "type": "string"
+          },
+          "roomName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusLabel": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "设备信息"
+      },
+      "ResultDeviceVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/DeviceVO"
+          }
+        }
+      },
+      "RepairOrderCreateDTO": {
+        "required": [
+          "deviceId",
+          "faultDesc"
+        ],
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "integer",
+            "description": "故障设备ID",
+            "format": "int64"
+          },
+          "faultDesc": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string",
+            "description": "故障描述"
+          },
+          "priority": {
+            "pattern": "NORMAL|URGENT",
+            "type": "string",
+            "description": "优先级，默认 NORMAL"
+          }
+        },
+        "description": "提交报修单请求"
+      },
+      "RepairOrderVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "报修单ID",
+            "format": "int64"
+          },
+          "orderNo": {
+            "type": "string",
+            "description": "报修单号"
+          },
+          "reporterId": {
+            "type": "integer",
+            "description": "报障人ID",
+            "format": "int64"
+          },
+          "reporterName": {
+            "type": "string",
+            "description": "报障人姓名（关联 sys_user）"
+          },
+          "deviceId": {
+            "type": "integer",
+            "description": "设备ID",
+            "format": "int64"
+          },
+          "deviceName": {
+            "type": "string",
+            "description": "设备名称（关联 device）"
+          },
+          "roomName": {
+            "type": "string",
+            "description": "所在机房"
+          },
+          "faultDesc": {
+            "type": "string",
+            "description": "故障描述"
+          },
+          "priority": {
+            "type": "string",
+            "description": "优先级"
+          },
+          "status": {
+            "type": "string",
+            "description": "单据状态"
+          },
+          "statusLabel": {
+            "type": "string",
+            "description": "单据状态中文名"
+          },
+          "priorityLabel": {
+            "type": "string",
+            "description": "优先级中文名"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "提交时间",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "最后更新时间",
+            "format": "date-time"
+          }
+        },
+        "description": "报修单视图对象"
+      },
+      "ResultRepairOrderVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RepairOrderVO"
+          }
+        }
+      },
+      "SupplementDTO": {
+        "required": [
+          "faultDesc"
+        ],
+        "type": "object",
+        "properties": {
+          "faultDesc": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string",
+            "description": "补充后的故障描述"
+          }
+        },
+        "description": "补充故障信息请求"
+      },
+      "ConfirmRecordVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "confirmBy": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "confirmName": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "验收确认记录"
+      },
+      "RepairHandleVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "handlerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "handlerName": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "处理记录"
+      },
+      "RepairOrderDetailVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "报修单ID",
+            "format": "int64"
+          },
+          "orderNo": {
+            "type": "string",
+            "description": "报修单号"
+          },
+          "reporterId": {
+            "type": "integer",
+            "description": "报障人ID",
+            "format": "int64"
+          },
+          "reporterName": {
+            "type": "string",
+            "description": "报障人姓名（关联 sys_user）"
+          },
+          "deviceId": {
+            "type": "integer",
+            "description": "设备ID",
+            "format": "int64"
+          },
+          "deviceName": {
+            "type": "string",
+            "description": "设备名称（关联 device）"
+          },
+          "roomName": {
+            "type": "string",
+            "description": "所在机房"
+          },
+          "faultDesc": {
+            "type": "string",
+            "description": "故障描述"
+          },
+          "priority": {
+            "type": "string",
+            "description": "优先级"
+          },
+          "status": {
+            "type": "string",
+            "description": "单据状态"
+          },
+          "statusLabel": {
+            "type": "string",
+            "description": "单据状态中文名"
+          },
+          "priorityLabel": {
+            "type": "string",
+            "description": "优先级中文名"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "提交时间",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "最后更新时间",
+            "format": "date-time"
+          },
+          "statusLogs": {
+            "type": "array",
+            "description": "状态变更轨迹",
+            "items": {
+              "$ref": "#/components/schemas/StatusLogVO"
+            }
+          },
+          "handles": {
+            "type": "array",
+            "description": "技术员处理记录",
+            "items": {
+              "$ref": "#/components/schemas/RepairHandleVO"
+            }
+          },
+          "confirms": {
+            "type": "array",
+            "description": "验收确认记录",
+            "items": {
+              "$ref": "#/components/schemas/ConfirmRecordVO"
+            }
+          },
+          "allowedActions": {
+            "type": "array",
+            "description": "当前登录用户可执行的动作",
+            "items": {
+              "type": "string",
+              "description": "当前登录用户可执行的动作"
+            }
+          }
+        },
+        "description": "报修单详情"
+      },
+      "ResultRepairOrderDetailVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RepairOrderDetailVO"
+          }
+        }
+      },
+      "StatusLogVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fromStatus": {
+            "type": "string"
+          },
+          "fromStatusLabel": {
+            "type": "string"
+          },
+          "toStatus": {
+            "type": "string"
+          },
+          "toStatusLabel": {
+            "type": "string"
+          },
+          "operatorId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "operatorName": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "状态变更日志"
+      },
+      "OrderActionDTO": {
+        "type": "object",
+        "properties": {
+          "remark": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string",
+            "description": "状态日志备注"
+          },
+          "content": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string",
+            "description": "处理内容（写 repair_handle）"
+          }
+        },
+        "description": "状态流转请求"
+      },
+      "ConfirmDTO": {
+        "required": [
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "result": {
+            "pattern": "PASS|FAIL",
+            "type": "string",
+            "description": "PASS 通过 / FAIL 不通过"
+          },
+          "score": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "description": "满意度 1-5 分，可空",
+            "format": "int32"
+          },
+          "comment": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string"
+          }
+        },
+        "description": "验收确认请求"
+      },
+      "RegisterDTO": {
+        "required": [
+          "password",
+          "realName",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "pattern": "^[A-Za-z0-9_]{4,20}$",
+            "type": "string",
+            "description": "用户名"
+          },
+          "password": {
+            "maxLength": 32,
+            "minLength": 6,
+            "type": "string",
+            "description": "密码（明文传输由 HTTPS 保证，入库前 BCrypt 加密）"
+          },
+          "realName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "真实姓名"
+          },
+          "phone": {
+            "pattern": "^$|^1\\d{10}$",
+            "type": "string",
+            "description": "手机号，可空"
+          }
+        },
+        "description": "注册请求"
+      },
+      "LoginVO": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "JWT 令牌，后续请求放入 Authorization: Bearer <token>"
+          },
+          "username": {
+            "type": "string",
+            "description": "用户名"
+          },
+          "realName": {
+            "type": "string",
+            "description": "真实姓名"
+          },
+          "roleCode": {
+            "type": "string",
+            "description": "角色编码"
+          }
+        },
+        "description": "登录成功返回"
+      },
+      "ResultLoginVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/LoginVO"
+          }
+        }
+      },
+      "LoginDTO": {
+        "required": [
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "用户名"
+          },
+          "password": {
+            "type": "string",
+            "description": "密码"
+          }
+        },
+        "description": "登录请求"
+      },
+      "NameCountVO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "分组统计项"
+      },
+      "ResultStatsOverviewVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/StatsOverviewVO"
+          }
+        }
+      },
+      "StatsOverviewVO": {
+        "type": "object",
+        "properties": {
+          "totalOrders": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "openOrders": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "closedOrders": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "avgRepairHours": {
+            "type": "number",
+            "description": "平均修复时长（小时，保留两位小数）"
+          },
+          "byRoom": {
+            "type": "array",
+            "description": "未关闭单据按机房分组",
+            "items": {
+              "$ref": "#/components/schemas/NameCountVO"
+            }
+          },
+          "byStatus": {
+            "type": "array",
+            "description": "全部单据按状态分组",
+            "items": {
+              "$ref": "#/components/schemas/NameCountVO"
+            }
+          }
+        },
+        "description": "统计概览"
+      },
+      "RepairOrderQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "页码，从 1 开始",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "description": "每页条数",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：PENDING/INVESTIGATING/REPAIRING/PENDING_CONFIRM/CLOSED/INFO_NEEDED"
+          },
+          "priority": {
+            "type": "string",
+            "description": "优先级：NORMAL/URGENT"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "关键字：单号、故障描述、设备名、报障人姓名"
+          },
+          "roomName": {
+            "type": "string",
+            "description": "机房名称"
+          },
+          "onlyMine": {
+            "type": "boolean",
+            "description": "是否只看自己的报修单"
+          }
+        },
+        "description": "报修单分页查询条件"
+      },
+      "PageResultRepairOrderVO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepairOrderVO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ResultPageResultRepairOrderVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultRepairOrderVO"
+          }
+        }
+      },
+      "ResultListRepairOrderVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepairOrderVO"
+            }
+          }
+        }
+      },
+      "ResultMapStringString": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DeviceQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "页码，从 1 开始",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "description": "每页条数",
+            "format": "int32"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "设备编号或名称关键字"
+          },
+          "roomName": {
+            "type": "string",
+            "description": "机房名称"
+          },
+          "status": {
+            "type": "string",
+            "description": "设备状态"
+          }
+        },
+        "description": "设备分页查询条件"
+      },
+      "PageResultDeviceVO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceVO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ResultPageResultDeviceVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultDeviceVO"
+          }
+        }
+      },
+      "ResultListString": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ResultVoid": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "x-openapi": {
+    "x-setting": {
+      "customCode": 200,
+      "language": "zh-CN",
+      "enableSwaggerModels": true,
+      "swaggerModelName": "Swagger Models",
+      "enableReloadCacheParameter": false,
+      "enableAfterScript": true,
+      "enableDocumentManage": true,
+      "enableVersion": false,
+      "enableRequestCache": true,
+      "enableFilterMultipartApis": false,
+      "enableFilterMultipartApiMethodType": "POST",
+      "enableHost": false,
+      "enableHostText": "",
+      "enableDynamicParameter": false,
+      "enableDebug": true,
+      "enableFooter": true,
+      "enableFooterCustom": false,
+      "enableSearch": true,
+      "enableOpenApi": true,
+      "enableHomeCustom": false,
+      "enableGroup": true,
+      "enableResponseCode": true
+    },
+    "x-markdownFiles": []
+  }
+}
