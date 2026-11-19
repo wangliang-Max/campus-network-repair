@@ -1,0 +1,2 @@
+GET / HTTP 200
+{"code":200,"message":"成功","data":{"service":"campus-repair","status":"UP"}}

@@ -1,0 +1,41 @@
+LAST SEEN   TYPE      REASON                         OBJECT                                    MESSAGE
+3m21s       Normal    Scheduled                      pod/g18-backend-58c86794dc-rqms6          Successfully assigned enterprise-g18/g18-backend-58c86794dc-rqms6 to wl100
+3m21s       Normal    Scheduled                      pod/g18-frontend-7dc8b554d5-xz2cx         Successfully assigned enterprise-g18/g18-frontend-7dc8b554d5-xz2cx to wl100
+3m21s       Normal    Scheduled                      pod/g18-backend-58c86794dc-gprfk          Successfully assigned enterprise-g18/g18-backend-58c86794dc-gprfk to wl100
+3m21s       Normal    Scheduled                      pod/g18-frontend-7dc8b554d5-8zjfr         Successfully assigned enterprise-g18/g18-frontend-7dc8b554d5-8zjfr to wl100
+3m21s       Normal    Scheduled                      pod/g18-mysql-7678cfffcc-vp6g2            Successfully assigned enterprise-g18/g18-mysql-7678cfffcc-vp6g2 to wl100
+3m22s       Normal    SuccessfulCreate               replicaset/g18-backend-58c86794dc         Created pod: g18-backend-58c86794dc-rqms6
+3m22s       Normal    SuccessfulCreate               replicaset/g18-backend-58c86794dc         Created pod: g18-backend-58c86794dc-gprfk
+3m22s       Normal    ScalingReplicaSet              deployment/g18-mysql                      Scaled up replica set g18-mysql-7678cfffcc to 1
+3m22s       Normal    ScalingReplicaSet              deployment/g18-backend                    Scaled up replica set g18-backend-58c86794dc to 2
+3m22s       Normal    SuccessfulCreate               replicaset/g18-mysql-7678cfffcc           Created pod: g18-mysql-7678cfffcc-vp6g2
+3m22s       Normal    ScalingReplicaSet              deployment/g18-frontend                   Scaled up replica set g18-frontend-7dc8b554d5 to 2
+3m21s       Normal    SuccessfulCreate               replicaset/g18-frontend-7dc8b554d5        Created pod: g18-frontend-7dc8b554d5-8zjfr
+3m21s       Normal    Pulled                         pod/g18-frontend-7dc8b554d5-xz2cx         Container image "g18-web:v1" already present on machine
+3m21s       Normal    SuccessfulCreate               replicaset/g18-frontend-7dc8b554d5        Created pod: g18-frontend-7dc8b554d5-xz2cx
+3m21s       Normal    Pulled                         pod/g18-backend-58c86794dc-rqms6          Container image "g18-api:v1" already present on machine
+3m21s       Normal    Created                        pod/g18-frontend-7dc8b554d5-xz2cx         Created container frontend
+3m21s       Warning   FailedMount                    pod/g18-mysql-7678cfffcc-vp6g2            MountVolume.SetUp failed for volume "sql" : configmap "g18-db-init" not found
+3m21s       Normal    Created                        pod/g18-backend-58c86794dc-rqms6          Created container backend
+3m21s       Normal    Pulled                         pod/g18-frontend-7dc8b554d5-8zjfr         Container image "g18-web:v1" already present on machine
+3m21s       Normal    Created                        pod/g18-frontend-7dc8b554d5-8zjfr         Created container frontend
+3m21s       Normal    Created                        pod/g18-backend-58c86794dc-gprfk          Created container backend
+3m21s       Normal    Pulled                         pod/g18-backend-58c86794dc-gprfk          Container image "g18-api:v1" already present on machine
+3m20s       Normal    Started                        pod/g18-frontend-7dc8b554d5-8zjfr         Started container frontend
+3m20s       Normal    Pulling                        pod/g18-mysql-7678cfffcc-vp6g2            Pulling image "busybox:1.36"
+3m20s       Normal    Started                        pod/g18-frontend-7dc8b554d5-xz2cx         Started container frontend
+3m20s       Normal    Started                        pod/g18-backend-58c86794dc-gprfk          Started container backend
+3m20s       Normal    Started                        pod/g18-backend-58c86794dc-rqms6          Started container backend
+3m16s       Normal    Pulled                         pod/g18-mysql-7678cfffcc-vp6g2            Successfully pulled image "busybox:1.36" in 4.711s (4.711s including waiting). Image size: 2217006 bytes.
+3m15s       Normal    Started                        pod/g18-mysql-7678cfffcc-vp6g2            Started container copy-sql
+3m15s       Normal    Created                        pod/g18-mysql-7678cfffcc-vp6g2            Created container copy-sql
+3m14s       Normal    Created                        pod/g18-mysql-7678cfffcc-vp6g2            Created container mysql
+3m14s       Normal    Pulled                         pod/g18-mysql-7678cfffcc-vp6g2            Container image "mysql:8.0" already present on machine
+3m14s       Normal    Started                        pod/g18-mysql-7678cfffcc-vp6g2            Started container mysql
+3m6s        Warning   FailedGetResourceMetric        horizontalpodautoscaler/g18-backend-hpa   failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+3m6s        Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/g18-backend-hpa   invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+2m51s       Warning   Unhealthy                      pod/g18-backend-58c86794dc-rqms6          Readiness probe failed: Get "http://10.42.0.9:8080/api/health": dial tcp 10.42.0.9:8080: connect: connection refused
+2m51s       Warning   Unhealthy                      pod/g18-backend-58c86794dc-gprfk          Readiness probe failed: Get "http://10.42.0.10:8080/api/health": dial tcp 10.42.0.10:8080: connect: connection refused
+2m50s       Warning   Unhealthy                      pod/g18-mysql-7678cfffcc-vp6g2            Readiness probe failed: mysqladmin: [Warning] Using a password on the command line interface can be insecure....
+2m21s       Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/g18-backend-hpa   invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+2m21s       Warning   FailedGetResourceMetric        horizontalpodautoscaler/g18-backend-hpa   failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)

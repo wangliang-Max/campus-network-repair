@@ -1,0 +1,2 @@
+deployment.apps/g18-backend image updated
+deployment "g18-backend" successfully rolled out

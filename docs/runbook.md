@@ -13,11 +13,13 @@
 
 ```bash
 docker build -t g18-api:v1 ./backend
+cd frontend && npm ci && npm run build && cd ..
 docker build -t g18-web:v1 ./frontend
 docker images | grep g18
 ```
 
-两个镜像都是多阶段构建：后端 Maven → JRE，前端 Node → Nginx；镜像标签不使用 latest。
+后端是 Maven → JRE 多阶段构建；前端先在本机执行 `npm run build`，Dockerfile 再把 dist 复制到 Nginx。
+镜像标签不使用 latest。
 
 ## 3. Docker Compose
 
@@ -29,7 +31,7 @@ docker compose ps
 docker compose logs --timestamps
 ```
 
-访问 <http://localhost:8080>，只暴露前端端口；后端通过 `backend:8080` 内部访问 MySQL。
+访问 <http://localhost:8081>，只暴露前端端口；后端通过 `backend:8080` 内部访问 MySQL。
 
 验证数据持久化：
 

@@ -1,0 +1,36 @@
+NAME              REFERENCE                TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 2%/60%   2         4         4          15m
+Name:                                                  g18-backend-hpa
+Namespace:                                             enterprise-g18
+Labels:                                                <none>
+Annotations:                                           <none>
+CreationTimestamp:                                     Thu, 19 Nov 2026 17:21:06 +0800
+Reference:                                             Deployment/g18-backend
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  2% (4m) / 60%
+Min replicas:                                          2
+Max replicas:                                          4
+Deployment pods:                                       4 current / 4 desired
+Conditions:
+  Type            Status  Reason               Message
+  ----            ------  ------               -------
+  AbleToScale     True    ScaleDownStabilized  recent recommendations were higher than current one, applying the highest recent recommendation
+  ScalingActive   True    ValidMetricFound     the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
+  ScalingLimited  True    TooManyReplicas      the desired replica count is more than the maximum replica count
+Events:
+  Type     Reason                        Age                From                       Message
+  ----     ------                        ----               ----                       -------
+  Warning  FailedGetResourceMetric       15m                horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedComputeMetricsReplicas  15m                horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedGetResourceMetric       14m (x3 over 15m)  horizontal-pod-autoscaler  failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Warning  FailedComputeMetricsReplicas  14m (x3 over 15m)  horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Normal   SuccessfulRescale             8m23s              horizontal-pod-autoscaler  New size: 2; reason: All metrics below target
+  Normal   SuccessfulRescale             5m8s               horizontal-pod-autoscaler  New size: 4; reason: cpu resource utilization (percentage of request) above target
+NAME                            READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg    1/1     Running   0          9m9s
+g18-backend-58c86794dc-9jvr2    1/1     Running   0          5m8s
+g18-backend-58c86794dc-fvb88    1/1     Running   0          10m
+g18-backend-58c86794dc-hkdvs    1/1     Running   0          5m8s
+g18-frontend-7dc8b554d5-8zjfr   1/1     Running   0          15m
+g18-frontend-7dc8b554d5-xz2cx   1/1     Running   0          15m
+g18-mysql-7678cfffcc-vp6g2      1/1     Running   0          15m

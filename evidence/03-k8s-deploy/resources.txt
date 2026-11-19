@@ -1,0 +1,23 @@
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/g18-backend    2/2     2            2           3m19s
+deployment.apps/g18-frontend   2/2     2            2           3m19s
+deployment.apps/g18-mysql      1/1     1            1           3m19s
+
+NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/g18-backend    ClusterIP   10.43.21.193   <none>        8080/TCP   3m19s
+service/g18-frontend   ClusterIP   10.43.145.41   <none>        80/TCP     3m19s
+service/g18-mysql      ClusterIP   10.43.179.58   <none>        3306/TCP   3m19s
+
+NAME                     ENDPOINTS                        AGE
+endpoints/g18-backend    10.42.0.10:8080,10.42.0.9:8080   3m19s
+endpoints/g18-frontend   10.42.0.11:80,10.42.0.12:80      3m18s
+endpoints/g18-mysql      10.42.0.13:3306                  3m19s
+
+NAME                                  STATUS   VOLUME         CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/g18-mysql-pvc   Bound    g18-mysql-pv   5Gi        RWO            manual         <unset>                 3m19s
+
+NAME                                                  REFERENCE                TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/g18-backend-hpa   Deployment/g18-backend   cpu: 3%/60%   2         4         2          3m18s
+
+NAME                                    CLASS     HOSTS              ADDRESS        PORTS   AGE
+ingress.networking.k8s.io/g18-ingress   traefik   g18.course.local   192.168.88.3   80      3m18s

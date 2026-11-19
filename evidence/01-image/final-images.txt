@@ -1,0 +1,6 @@
+"docker images" requires at most 1 argument.
+See 'docker images --help'.
+
+Usage:  docker images [OPTIONS] [REPOSITORY[:TAG]]
+
+List images

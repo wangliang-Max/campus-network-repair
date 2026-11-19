@@ -1,0 +1,10 @@
+deployment.apps/g18-backend 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+
+deployment.apps/g18-backend 
+REVISION  CHANGE-CAUSE
+2         <none>
+3         <none>
+

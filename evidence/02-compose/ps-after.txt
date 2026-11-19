@@ -1,0 +1,4 @@
+NAME           IMAGE        COMMAND                   SERVICE    CREATED              STATUS                    PORTS
+g18-backend    g18-api:v1   "sh -c 'java $JAVA_O…"   backend    4 minutes ago        Up 3 minutes (healthy)    8080/tcp
+g18-frontend   g18-web:v1   "/docker-entrypoint.…"   frontend   About a minute ago   Up About a minute         0.0.0.0:8081->80/tcp, :::8081->80/tcp
+g18-mysql      mysql:8.0    "docker-entrypoint.s…"   mysql      33 seconds ago       Up 31 seconds (healthy)   3306/tcp, 33060/tcp

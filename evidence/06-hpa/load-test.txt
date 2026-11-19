@@ -1,0 +1,79 @@
+=== before load: 17:31:11 ===
+NAME              REFERENCE                TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 2%/60%   2         4         2          10m
+NAME                           CPU(cores)   MEMORY(bytes)   
+g18-backend-58c86794dc-7h8dg   6m           166Mi           
+g18-backend-58c86794dc-fvb88   5m           150Mi           
+=== after 10s ===
+NAME              REFERENCE                TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 48%/60%   2         4         2          10m
+NAME                           READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg   1/1     Running   0          3m51s
+g18-backend-58c86794dc-fvb88   1/1     Running   0          4m44s
+=== after 20s ===
+NAME              REFERENCE                TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 223%/60%   2         4         4          11m
+NAME                           READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg   1/1     Running   0          4m25s
+g18-backend-58c86794dc-9jvr2   0/1     Running   0          24s
+g18-backend-58c86794dc-fvb88   1/1     Running   0          5m18s
+g18-backend-58c86794dc-hkdvs   0/1     Running   0          24s
+=== after 30s ===
+NAME              REFERENCE                TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 91%/60%   2         4         4          11m
+NAME                           READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg   1/1     Running   0          4m58s
+g18-backend-58c86794dc-9jvr2   0/1     Running   0          57s
+g18-backend-58c86794dc-fvb88   1/1     Running   0          5m51s
+g18-backend-58c86794dc-hkdvs   0/1     Running   0          57s
+=== after 40s ===
+NAME              REFERENCE                TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 134%/60%   2         4         4          12m
+NAME                           READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg   1/1     Running   0          5m29s
+g18-backend-58c86794dc-9jvr2   1/1     Running   0          88s
+g18-backend-58c86794dc-fvb88   1/1     Running   0          6m22s
+g18-backend-58c86794dc-hkdvs   1/1     Running   0          88s
+=== after 50s ===
+NAME              REFERENCE                TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 130%/60%   2         4         4          12m
+NAME                           READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg   1/1     Running   0          6m
+g18-backend-58c86794dc-9jvr2   1/1     Running   0          119s
+g18-backend-58c86794dc-fvb88   1/1     Running   0          6m53s
+g18-backend-58c86794dc-hkdvs   1/1     Running   0          119s
+=== after 60s ===
+NAME              REFERENCE                TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 108%/60%   2         4         4          13m
+NAME                           READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg   1/1     Running   0          6m31s
+g18-backend-58c86794dc-9jvr2   1/1     Running   0          2m30s
+g18-backend-58c86794dc-fvb88   1/1     Running   0          7m24s
+g18-backend-58c86794dc-hkdvs   1/1     Running   0          2m30s
+=== after 70s ===
+NAME              REFERENCE                TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 56%/60%   2         4         4          13m
+NAME                           READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg   1/1     Running   0          7m3s
+g18-backend-58c86794dc-9jvr2   1/1     Running   0          3m2s
+g18-backend-58c86794dc-fvb88   1/1     Running   0          7m56s
+g18-backend-58c86794dc-hkdvs   1/1     Running   0          3m2s
+=== after 80s ===
+NAME              REFERENCE                TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+g18-backend-hpa   Deployment/g18-backend   cpu: 52%/60%   2         4         4          14m
+NAME                           READY   STATUS    RESTARTS   AGE
+g18-backend-58c86794dc-7h8dg   1/1     Running   0          7m34s
+g18-backend-58c86794dc-9jvr2   1/1     Running   0          3m33s
+g18-backend-58c86794dc-fvb88   1/1     Running   0          8m27s
+g18-backend-58c86794dc-hkdvs   1/1     Running   0          3m33s
+NAME                           CPU(cores)   MEMORY(bytes)   
+g18-backend-58c86794dc-7h8dg   122m         75Mi            
+g18-backend-58c86794dc-9jvr2   90m          159Mi           
+g18-backend-58c86794dc-fvb88   108m         60Mi            
+g18-backend-58c86794dc-hkdvs   114m         158Mi           
+pod "load1" deleted
+pod "load2" deleted
+pod "load3" deleted
+pod "load4" deleted
+pod "load5" deleted
+pod "load6" deleted

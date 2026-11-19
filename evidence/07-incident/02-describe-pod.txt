@@ -1,0 +1,65 @@
+Name:             g18-backend-58c86794dc-7h8dg
+Namespace:        enterprise-g18
+Priority:         0
+Service Account:  default
+Node:             wl100/192.168.88.3
+Start Time:       Thu, 19 Nov 2026 17:27:53 +0800
+Labels:           app=g18-backend
+                  pod-template-hash=58c86794dc
+Annotations:      <none>
+Status:           Running
+IP:               10.42.0.17
+IPs:
+  IP:           10.42.0.17
+Controlled By:  ReplicaSet/g18-backend-58c86794dc
+Containers:
+  backend:
+    Container ID:   containerd://ec032b03d1d7b5c8bac55d2919022f9e5422dc11272e6dc0cc465c775aa069f4
+    Image:          g18-api:v1
+    Image ID:       sha256:7dd2e969d9e1da29cfcf15ee1130cd1247e47a1e5be43d52ebec7b753581eb44
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Thu, 19 Nov 2026 17:27:54 +0800
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     500m
+      memory:  512Mi
+    Requests:
+      cpu:      200m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/api/health delay=60s timeout=3s period=20s #success=1 #failure=3
+    Readiness:  http-get http://:8080/api/health delay=25s timeout=3s period=10s #success=1 #failure=3
+    Environment Variables from:
+      g18-config  ConfigMap  Optional: false
+      g18-secret  Secret     Optional: false
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-827ll (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-827ll:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age   From               Message
+  ----     ------     ----  ----               -------
+  Normal   Scheduled  119s  default-scheduler  Successfully assigned enterprise-g18/g18-backend-58c86794dc-7h8dg to wl100
+  Normal   Pulled     119s  kubelet            Container image "g18-api:v1" already present on machine
+  Normal   Created    119s  kubelet            Created container backend
+  Normal   Started    118s  kubelet            Started container backend
+  Warning  Unhealthy  89s   kubelet            Readiness probe failed: Get "http://10.42.0.17:8080/api/health": dial tcp 10.42.0.17:8080: connect: connection refused

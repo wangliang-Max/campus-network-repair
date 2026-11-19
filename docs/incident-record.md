@@ -77,8 +77,10 @@ Pod 全部 Ready，Endpoints 非空，健康检查返回 `status=UP`。
 
 ## 8. 证据清单
 
-- [ ] `evidence/07-incident/01-get-pods.txt`
-- [ ] `evidence/07-incident/02-describe-pod.txt`
-- [ ] `evidence/07-incident/03-events.txt`
-- [ ] `evidence/07-incident/04-rollback.txt`
-- [ ] `evidence/07-incident/05-recovery.txt`
+- [x] `evidence/07-incident/01-get-pods.txt`
+- [x] `evidence/07-incident/02-describe-pod.txt`
+- [x] `evidence/07-incident/03-events.txt`
+- [x] `evidence/07-incident/04-rollback.txt`
+- [x] `evidence/07-incident/05-recovery.txt`
+
+实际 Events 已记录 `ErrImagePull`、`ImagePullBackOff` 和回滚后 Pod 恢复 Running，见上述文件。

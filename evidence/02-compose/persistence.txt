@@ -1,0 +1,22 @@
+before recreate:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+17
+ Container g18-mysql  Stopping
+ Container g18-mysql  Stopped
+Going to remove g18-mysql
+ Container g18-mysql  Removing
+ Container g18-mysql  Removed
+ Container g18-mysql  Creating
+ Container g18-mysql  Created
+ Container g18-mysql  Starting
+ Container g18-mysql  Started
+ Container g18-mysql  Running
+ Container g18-backend  Running
+ Container g18-frontend  Running
+ Container g18-mysql  Waiting
+ Container g18-mysql  Healthy
+ Container g18-backend  Waiting
+ Container g18-backend  Healthy
+after recreate:
+mysql: [Warning] Using a password on the command line interface can be insecure.
+17

@@ -1,0 +1,4 @@
+GET http://localhost:8081/
+HTTP 200
+POST http://localhost:8081/api/auth/login
+HTTP 200

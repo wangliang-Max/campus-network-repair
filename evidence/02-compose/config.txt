@@ -1,0 +1,105 @@
+name: campus-repair
+services:
+  backend:
+    build:
+      context: /home/wangliang/cnr/backend
+      dockerfile: Dockerfile
+    container_name: g18-backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+        required: true
+    environment:
+      DB_PASSWORD: "123456"
+      DB_URL: jdbc:mysql://mysql:3306/campus_repair?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      JWT_SECRET: campus-repair-jwt-secret-key-2026-please-change
+      SPRING_PROFILES_ACTIVE: dev
+      TZ: Asia/Shanghai
+    expose:
+      - "8080"
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - -q
+        - -O
+        - '-'
+        - http://127.0.0.1:8080/api/health
+      timeout: 5s
+      interval: 10s
+      retries: 12
+      start_period: 30s
+    image: g18-api:v1
+    networks:
+      cnr-net: null
+    restart: unless-stopped
+  frontend:
+    build:
+      context: /home/wangliang/cnr/frontend
+      dockerfile: Dockerfile
+    container_name: g18-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+        required: true
+    environment:
+      BACKEND_HOST: backend
+    image: g18-web:v1
+    networks:
+      cnr-net: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "8081"
+        protocol: tcp
+    restart: unless-stopped
+  mysql:
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    container_name: g18-mysql
+    environment:
+      MYSQL_DATABASE: campus_repair
+      MYSQL_ROOT_PASSWORD: "123456"
+      TZ: Asia/Shanghai
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - 127.0.0.1
+        - -p123456
+      timeout: 5s
+      interval: 10s
+      retries: 12
+      start_period: 20s
+    image: mysql:8.0
+    networks:
+      cnr-net: null
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: mysql-data
+        target: /var/lib/mysql
+        volume: {}
+      - type: bind
+        source: /home/wangliang/cnr/database/schema.sql
+        target: /docker-entrypoint-initdb.d/01-schema.sql
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/wangliang/cnr/database/seed.sql
+        target: /docker-entrypoint-initdb.d/02-seed.sql
+        read_only: true
+        bind:
+          create_host_path: true
+networks:
+  cnr-net:
+    name: campus-repair_cnr-net
+    driver: bridge
+volumes:
+  mysql-data:
+    name: campus-repair_mysql-data

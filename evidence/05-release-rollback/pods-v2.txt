@@ -1,0 +1,4 @@
+NAME                           READY   STATUS        RESTARTS   AGE     IP           NODE    NOMINATED NODE   READINESS GATES
+g18-backend-58c86794dc-gprfk   1/1     Terminating   0          5m54s   10.42.0.10   wl100   <none>           <none>
+g18-backend-594dfd8ff4-82knn   1/1     Running       0          43s     10.42.0.15   wl100   <none>           <none>
+g18-backend-594dfd8ff4-p2vrm   1/1     Running       0          95s     10.42.0.14   wl100   <none>           <none>

@@ -1,0 +1,6 @@
+NAME                            READY   STATUS    RESTARTS   AGE     IP           NODE    NOMINATED NODE   READINESS GATES
+g18-backend-58c86794dc-gprfk    1/1     Running   0          3m19s   10.42.0.10   wl100   <none>           <none>
+g18-backend-58c86794dc-rqms6    1/1     Running   0          3m19s   10.42.0.9    wl100   <none>           <none>
+g18-frontend-7dc8b554d5-8zjfr   1/1     Running   0          3m19s   10.42.0.11   wl100   <none>           <none>
+g18-frontend-7dc8b554d5-xz2cx   1/1     Running   0          3m18s   10.42.0.12   wl100   <none>           <none>
+g18-mysql-7678cfffcc-vp6g2      1/1     Running   0          3m19s   10.42.0.13   wl100   <none>           <none>

@@ -1,0 +1,5 @@
+g18-web                               v1            1f18a604ee39   3 minutes ago       49.8MB
+g18-api                               v1            7dd2e969d9e1   About an hour ago   258MB
+mysql                                 8.0           6cd09145362d   6 months ago        799MB
+docker.1panel.live/library/nginx      1.27-alpine   6769dc3a703c   19 months ago       48.2MB
+nginx                                 1.27-alpine   6769dc3a703c   19 months ago       48.2MB
