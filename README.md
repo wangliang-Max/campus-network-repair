@@ -1,54 +1,67 @@
 # 校园网络与机房故障报修平台（T05）
 
-基于 Spring Boot 3 的校园网络与机房故障报修管理系统：报障人提交报修单，网络技术员受理、排查、修复，报障人确认关闭，全流程状态可追踪，含角色权限、JWT 认证、状态日志与统计报表。
+基于 Spring Boot 3 的校园网络与机房故障报修管理系统：报障人提交报修单，网络技术员受理、排查、修复，报障人确认关闭，全流程状态可追踪。
 
-- 课程：JavaWeb 后端开发技术（期末综合项目，与 Docker、MVVM 课程共用选题库）
+- 课程：JavaWeb 后端开发技术（期末综合项目）
 - 选题编号：T05 校园网络与机房故障报修平台
-- 本仓库仅包含**后端**部分（前端见其他课程交付）
+- 本仓库仅包含**后端**部分
 
----
+## 当前进度
+
+| 阶段 | 内容 | 状态 |
+| --- | --- | --- |
+| 0 | 仓库初始化、README、.gitignore | 已完成 |
+| 1 | 数据库设计（7 张表）、ER 图、种子数据 | 已完成 |
+| 2 | Spring Boot 工程骨架、统一返回、全局异常、健康检查 | 已完成 |
+| 3 | 登录、BCrypt、JWT、拦截器白名单 | 已完成（注册、角色注解待补） |
+| 4 | 报修单创建（防重复）、详情（越权校验）、我的列表 | 进行中：设备 CRUD、状态流转、状态日志、乐观锁待补 |
+| 5 | 多表 JOIN 查询、条件分页、统计接口 | 待开发 |
+| 6 | 接口文档、Apifox 测试记录、贡献说明 | 待开发 |
+| 7 | 答辩冻结版本（tag）、演示材料 | 待开发 |
 
 ## 技术栈
 
 | 分类 | 技术 |
 | --- | --- |
-| 语言 / 框架 | Java 21 · Spring Boot 3.x · Maven |
+| 语言 / 框架 | Java 21 · Spring Boot 3.3 · Maven |
 | 数据层 | MyBatis-Plus · MySQL 8 |
-| 认证鉴权 | JWT（jjwt）· BCrypt（spring-security-crypto） |
-| 接口文档 | Knife4j |
-| 部署 | 环境变量注入配置 · Docker（Docker 课程要求，见 backend/Dockerfile） |
+| 认证鉴权 | JWT（jjwt）· BCrypt（spring-security-crypto）· 拦截器 + ThreadLocal |
+| 接口文档 | Knife4j（OpenAPI 3） |
 
-## 功能概览
+## 接口清单（已实现）
 
-- **三种角色**：报障人（学生/教职工）、网络技术员、系统管理员，接口按角色鉴权
-- **主流程 5 状态**：待受理 → 排查中 → 修复中 → 待确认 → 已关闭
-- **异常分支**：无法复现 → 退回补充信息 → 重受理；验收不通过 → 返工
-- **工程规范**：Controller / Service / Mapper 三层，Entity / DTO / VO，统一 Result，全局异常，错误码规范
-- **安全**：密码 BCrypt 存储；JWT 拦截器校验，白名单明确；防水平越权；非法状态流转拒绝；乐观锁防并发重复提交
-- **统计**：平均修复时长、未修复单数、按机房分组统计
-- **接口**：RESTful 风格，25+ 个接口
+| 方法 | 路径 | 说明 | 是否需要登录 |
+| --- | --- | --- | --- |
+| GET | `/api/health` | 健康检查 | 否 |
+| POST | `/api/auth/login` | 登录，返回 JWT | 否 |
+| POST | `/api/repair-orders` | 提交报修单 | 是 |
+| GET | `/api/repair-orders/{id}` | 报修单详情（本人或技术员/管理员） | 是 |
+| GET | `/api/repair-orders/my` | 我的报修列表 | 是 |
+
+请求头需携带 `Authorization: Bearer <token>`，其余接口按阶段 4/5 继续补充。
 
 ## 目录结构
 
-```
+```text
 campus-network-repair/
-├── backend/                   # 后端源码（pom.xml、Dockerfile）
-├── database/                  # schema.sql、seed.sql
-├── docs/
-│   ├── requirements.md        # 需求说明：角色、功能、状态流转图
-│   ├── database-design.md    # ER 图、表结构、索引说明
-│   ├── api-doc/              # 接口文档导出或截图
-│   ├── api-test/             # Apifox/Postman 测试集合与结果
-│   ├── business-flow-record.md   # 主流程、异常流程、统计的测试数据与结果
-│   ├── contribution-table.md # 分工与提交记录
-│   └── ai-usage-statement.md # AI 工具使用说明
+├── cnr-java/                  # 后端源码（Spring Boot 单模块）
+│   ├── pom.xml
+│   └── src/main/
+│       ├── java/com/cnr/      # controller / service / mapper / entity / dto / vo / config / security
+│       └── resources/         # application.yml、application-dev.yml
+├── database/
+│   ├── schema.sql             # 建库建表（7 张表）
+│   ├── seed.sql               # 模拟数据
+│   └── er.mmd、er-diagram.png # ER 图源文件与导出图
+├── doc/
+│   └── database-design.md     # 表结构、索引、状态枚举说明
 └── README.md
 ```
 
 ## 环境要求
 
-- JDK 21
-- Maven 3.9+
+- JDK 21（**必须**：pom 中 `java.version=21`，用 JDK 17 构建会报"不支持发行版本 21"）
+- Maven 3.6+
 - MySQL 8.0+
 - Apifox 或 Postman（接口测试）
 
@@ -57,85 +70,76 @@ campus-network-repair/
 ### 1. 初始化数据库
 
 ```bash
-# 在空库执行（保证一次成功）
-mysql -u root -p < database/schema.sql
-mysql -u root -p < database/seed.sql
+# 注意：schema.sql 开头会 DROP DATABASE campus_repair 后重建，执行前确认没有需要保留的数据
+mysql --default-character-set=utf8mb4 -u root -p < database/schema.sql
+mysql --default-character-set=utf8mb4 -u root -p < database/seed.sql
 ```
 
-### 2. 配置环境变量
+必须加 `--default-character-set=utf8mb4`，否则命令行客户端按本地字符集解析中文，seed 会报
+`Data too long for column 'role_name'`。用 Navicat / Workbench 导入时同样选择 utf8mb4。
 
-数据库与密钥信息全部通过环境变量注入，**不硬编码、不提交到仓库**。见下方「环境变量与多环境配置」。
+### 2. 数据库配置
+
+`cnr-java/src/main/resources/application-dev.yml` 已随仓库提供本地默认值
+（`localhost:3306/campus_repair`，账号 `root`，密码 `123456`），可直接启动。
+如与本机不一致，用环境变量覆盖即可，无需改文件：
+
+| 变量名 | 说明 | 示例 |
+| --- | --- | --- |
+| `DB_URL` | 数据库连接地址 | `jdbc:mysql://localhost:3306/campus_repair?...` |
+| `DB_USERNAME` | 数据库账号 | `root` |
+| `DB_PASSWORD` | 数据库密码 | 自定义 |
+| `JWT_SECRET` | JWT 签名密钥（≥32 字符） | 自定义 |
+| `JWT_EXPIRE_HOURS` | Token 有效期（小时） | `24` |
+| `SERVER_PORT` | 服务端口 | `8080` |
+| `SPRING_PROFILES_ACTIVE` | 激活环境 | `dev` |
+
+需要放真实密码时写在 `application-local.yml`，该文件已被 `.gitignore` 忽略。
 
 ### 3. 构建并启动
 
 ```bash
-cd backend
+cd cnr-java
 mvn clean package
-java -jar target/*.jar
+java -jar target/campus-repair-1.0.0.jar
 ```
 
 ### 4. 验证
 
 ```bash
-# 健康检查接口（供容器探针使用）
 curl http://localhost:8080/api/health
+# {"code":200,"message":"成功","data":{"service":"campus-repair","status":"UP"}}
+
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"123456"}'
 ```
 
-返回 `{"code":200,"message":"ok"}` 即启动成功。
+接口文档：启动后访问 <http://localhost:8080/doc.html>（Knife4j）。
 
-## 环境变量与多环境配置
+## 演示账号
 
-### 环境变量列表
+全部为模拟数据，密码统一为 `123456`：
 
-| 变量名 | 说明 | 示例 |
-| --- | --- | --- |
-| `DB_URL` | 数据库连接地址 | `jdbc:mysql://localhost:3306/campus_repair?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false` |
-| `DB_USERNAME` | 数据库账号 | `root` |
-| `DB_PASSWORD` | 数据库密码 | 自定义 |
-| `JWT_SECRET` | JWT 签名密钥（≥32 字符随机串） | 自定义 |
-| `SPRING_PROFILES_ACTIVE` | 激活的环境（默认 dev） | `dev` / `prod` |
-
-### 配置注入方式（application.yml 不写死密钥）
-
-```yaml
-spring:
-  datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/campus_repair?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:}
-jwt:
-  secret: ${JWT_SECRET:please-change-me-to-a-long-random-secret}
-```
-
-> 冒号后为默认值，仅本地开发兜底；正式运行必须通过环境变量覆盖。本地私密配置可写在 `application-local.yml`，该文件已加入 `.gitignore`，禁止提交。
-
-### 多环境配置说明
-
-- `application.yml`：通用配置（端口、MyBatis-Plus、日志级别等）
-- `application-dev.yml`：开发环境配置
-- `application-prod.yml`：生产环境配置
-- 通过 `SPRING_PROFILES_ACTIVE` 切换；敏感项（数据库密码、JWT 密钥）一律走环境变量，不写入任何配置文件。
-
-## 接口文档与测试
-
-- 启动后访问 Knife4j 在线文档：`http://localhost:8080/doc.html`
-- Apifox/Postman 测试集合：见 `docs/api-test/`（覆盖主流程、异常流程、越权场景）
-- 测试数据与结果：见 `docs/business-flow-record.md`
-
-## 提交与版本管理
-
-- 项目以 Git 管理，提交历史即开发过程记录（见 `git log`）
-- 答辩冻结版本以 tag 标记：`git tag -a v1.0.0 -m "答辩冻结版本"`
-- 分工说明：见 `docs/contribution-table.md`（本项目由单人独立完成全部模块）
-- AI 工具使用说明：见 `docs/ai-usage-statement.md`
+| 账号 | 角色 |
+| --- | --- |
+| `admin` | 管理员 |
+| `tech01` ~ `tech03` | 网络技术员 |
+| `stu01` ~ `stu07` | 报障人 |
 
 ## 数据说明
 
-- 全部使用**模拟数据**，不含任何真实个人信息、真实密码或密钥
-- 演示账号见 `database/seed.sql`
+- 全部为模拟数据，不含真实个人信息、真实密码或密钥
+- 默认密码与 JWT 密钥仅用于本地开发，部署时通过环境变量覆盖
 
-## 待补充
+## 版本管理
 
-- [ ] 数据库账号/密码/JWT 密钥按实际环境配置（不要提交到仓库）
-- [ ] 实际端口号与默认库名如与本地不一致，同步修改 `application.yml`
-- [ ] 补充实际运行截图（Knife4j、Apifox 测试通过、mvn package 日志）到 `docs/`
+- 按功能块提交，提交信息使用 `feat:` / `fix:` / `docs:` 前缀
+- 答辩冻结版本打 tag：`git tag -a v1.0.0 -m "答辩冻结版本"` 后 `git push origin --tags`
+
+## 后续计划
+
+- [ ] 阶段 4：设备/机房 CRUD、5 状态流转 + 非法流转拒绝、状态日志、乐观锁防并发、角色权限
+- [ ] 阶段 5：多表 JOIN 详情、多条件分页、统计接口
+- [ ] 阶段 6：Knife4j 截图、Apifox 测试集合、业务流程记录、贡献说明
+- [ ] 阶段 7：答辩 PPT 与演示视频
