@@ -4,7 +4,7 @@
 
 - 课程：JavaWeb 后端开发技术（期末综合项目）
 - 选题编号：T05 校园网络与机房故障报修平台
-- 本仓库仅包含**后端**部分
+- 本仓库包含**后端 + 前端**，并使用 Docker / Kubernetes 部署
 
 ## 功能概览
 
@@ -15,6 +15,7 @@
 - **并发控制**：`@Version` 乐观锁，防止两人同时受理同一张单
 - **查询统计**：多表 JOIN 分页查询、关键字/状态/机房筛选、平均修复时长与按机房分组
 - **接口文档**：Knife4j（OpenAPI 3），启动后访问 `/doc.html`
+- **前端**：Vue 3 + Vite + Element Plus，10 个页面、5 个复用组件、角色菜单、路由守卫
 
 ## 当前进度
 
@@ -27,7 +28,7 @@
 | 4 | 设备 CRUD、状态机、状态日志、乐观锁、越权校验 | 已完成 |
 | 5 | 多表 JOIN、条件分页、统计接口 | 已完成 |
 | 6 | 接口文档、测试记录、贡献说明、AI 使用声明 | 已完成 |
-| 7 | 答辩 PPT 与演示视频 | 待完成 |
+| 7 | Docker 镜像、Compose、Kubernetes、答辩 PPT 与视频 | 进行中 |
 
 ## 技术栈
 
@@ -115,6 +116,10 @@ campus-network-repair/
 │       └── test/java/com/cnr/common/OrderStatusTest.java
 ├── database/                          # schema.sql、seed.sql、ER 图
 ├── docs/                              # 设计、接口、测试、贡献、答辩材料
+├── frontend/                          # Vue 3 + Vite + Element Plus
+│   ├── src/                           # api / components / router / stores / views
+│   ├── nginx/                         # 生产环境反向代理模板
+│   └── Dockerfile                     # Node 构建 -> Nginx
 ├── scripts/smoke-test.ps1             # 端到端冒烟测试脚本
 └── README.md
 ```
@@ -124,6 +129,7 @@ campus-network-repair/
 - JDK 21（**必须**：pom 中 `java.version=21`，JDK 17 构建会报"不支持发行版本 21"）
 - Maven 3.6+
 - MySQL 8.0+
+- Node.js 20+（前端）
 - Apifox / Postman（可选）
 
 ## 快速开始
@@ -163,6 +169,17 @@ cd backend
 mvn clean package
 java -jar target/campus-repair-1.0.0.jar
 ```
+
+### 5. 启动前端
+
+```bash
+cd frontend
+npm install
+npm run dev          # http://localhost:5173，/api 代理到 8080
+npm run build        # 产物在 dist/
+```
+
+演示账号：`admin`（管理员）、`tech01`（技术员）、`stu07`（报障人），密码 `123456`。
 
 ### 4. 验证
 
@@ -209,12 +226,14 @@ powershell -ExecutionPolicy Bypass -File scripts/smoke-test.ps1
 | --- | --- |
 | [docs/database-design.md](docs/database-design.md) | ER 图、表结构、索引说明 |
 | [docs/requirements.md](docs/requirements.md) | 角色、功能、状态流转与页面清单 |
+| [docs/frontend-design.md](docs/frontend-design.md) | 页面、组件、store、路由与 Axios 设计 |
 | [docs/api.md](docs/api.md) | 接口清单与请求/响应示例 |
 | [docs/business-flow-record.md](docs/business-flow-record.md) | 主流程/异常/越权测试记录 |
 | [docs/contribution-table.md](docs/contribution-table.md) | 分工与提交记录 |
 | [docs/ai-usage-statement.md](docs/ai-usage-statement.md) | AI 工具使用说明 |
 | [docs/defense-outline.md](docs/defense-outline.md) | 答辩提纲与常见问题 |
 | [docs/api-doc/openapi.json](docs/api-doc/openapi.json) | 导出的 OpenAPI 3 文档 |
+| [docs/screenshots/frontend/](docs/screenshots/frontend/) | 前端页面截图 |
 
 ## 数据说明
 
