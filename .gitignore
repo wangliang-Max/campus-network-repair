@@ -10,3 +10,6 @@ logs/
 application-local.yml
 *.env
 .DS_Store
+node_modules/
+dist/
+*.local
