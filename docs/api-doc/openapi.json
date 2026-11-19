@@ -12,6 +12,48 @@
     }
   ],
   "paths": {
+    "/api/users/{id}/enabled": {
+      "put": {
+        "tags": [
+          "用户管理"
+        ],
+        "summary": "启用或禁用用户（管理员）",
+        "operationId": "setEnabled",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserEnabledDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultUserVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/devices/{id}": {
       "get": {
         "tags": [
@@ -114,13 +156,86 @@
         }
       }
     },
+    "/api/devices/{id}/status": {
+      "put": {
+        "tags": [
+          "机房设备管理"
+        ],
+        "summary": "修改设备状态（管理员）",
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceStatusDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultDeviceVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/password": {
+      "put": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "修改当前用户密码",
+        "operationId": "changePassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/repair-orders": {
       "get": {
         "tags": [
           "报修单管理"
         ],
         "summary": "报修单分页查询（报障人只能看自己的单）",
-        "operationId": "page",
+        "operationId": "page_1",
         "parameters": [
           {
             "name": "query",
@@ -428,7 +543,7 @@
           "机房设备管理"
         ],
         "summary": "设备分页查询（支持机房、状态、关键字）",
-        "operationId": "page_1",
+        "operationId": "page_2",
         "parameters": [
           {
             "name": "query",
@@ -537,6 +652,91 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ResultLoginVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "用户管理"
+        ],
+        "summary": "用户分页查询（管理员）",
+        "operationId": "page",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPageResultUserVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/technicians": {
+      "get": {
+        "tags": [
+          "用户管理"
+        ],
+        "summary": "技术员列表（派单选择）",
+        "operationId": "technicians",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultListUserVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stats/trend": {
+      "get": {
+        "tags": [
+          "统计报表"
+        ],
+        "summary": "近 N 天新增与关闭趋势",
+        "operationId": "trend",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 7
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultListTrendPointVO"
                 }
               }
             }
@@ -659,10 +859,90 @@
           }
         }
       }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "当前登录用户信息",
+        "operationId": "me",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultUserVO"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "UserEnabledDTO": {
+        "required": [
+          "enabled"
+        ],
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "description": "启用或禁用用户"
+      },
+      "ResultUserVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserVO"
+          }
+        }
+      },
+      "UserVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
+            "type": "string"
+          },
+          "realName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "roleCode": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "用户信息"
+      },
       "DeviceSaveDTO": {
         "required": [
           "deviceCode",
@@ -744,6 +1024,52 @@
           },
           "data": {
             "$ref": "#/components/schemas/DeviceVO"
+          }
+        }
+      },
+      "DeviceStatusDTO": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "pattern": "NORMAL|FAULT|REPAIRING",
+            "type": "string"
+          }
+        },
+        "description": "修改设备状态"
+      },
+      "ChangePasswordDTO": {
+        "required": [
+          "newPassword",
+          "oldPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "maxLength": 32,
+            "minLength": 6,
+            "type": "string"
+          }
+        },
+        "description": "修改密码请求"
+      },
+      "ResultVoid": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
           }
         }
       },
@@ -1207,6 +1533,127 @@
         },
         "description": "登录请求"
       },
+      "UserQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "用户名或姓名关键字"
+          },
+          "roleCode": {
+            "type": "string",
+            "description": "角色编码：REPORTER / TECHNICIAN / ADMIN"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "是否启用"
+          }
+        },
+        "description": "用户分页查询条件"
+      },
+      "PageResultUserVO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserVO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ResultPageResultUserVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultUserVO"
+          }
+        }
+      },
+      "ResultListUserVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserVO"
+            }
+          }
+        }
+      },
+      "ResultListTrendPointVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPointVO"
+            }
+          }
+        }
+      },
+      "TrendPointVO": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "created": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "closed": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "趋势数据点"
+      },
       "NameCountVO": {
         "type": "object",
         "properties": {
@@ -1470,21 +1917,6 @@
             "items": {
               "type": "string"
             }
-          }
-        }
-      },
-      "ResultVoid": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object"
           }
         }
       }

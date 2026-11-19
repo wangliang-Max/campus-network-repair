@@ -222,3 +222,60 @@ curl "http://localhost:8080/api/devices?page=1&size=5&roomName=图书馆机房&s
 ```
 
 平均修复时长 = `AVG(关闭时间 - 提交时间)`，按 `status_log` 中 `to_status='CLOSED'` 的记录计算。
+
+### GET /api/stats/trend?days=7（TECHNICIAN / ADMIN）
+
+返回近 N 天每天的新增与关闭单量，缺失日期补 0：
+
+```json
+{
+  "code": 200,
+  "message": "成功",
+  "data": [
+    { "date": "2026-11-13", "created": 0, "closed": 1 },
+    { "date": "2026-11-14", "created": 1, "closed": 0 }
+  ]
+}
+```
+
+## 当前用户
+
+### GET /api/auth/me
+
+返回当前登录用户的 id、用户名、姓名、手机号、角色与启用状态，不返回密码。
+
+### PUT /api/auth/password
+
+```json
+{ "oldPassword": "123456", "newPassword": "1234567" }
+```
+
+原密码不正确返回 400；新密码长度 6-32 位。
+
+## 用户管理（ADMIN）
+
+### GET /api/users
+
+查询参数：`page`、`size`、`keyword`（用户名/姓名）、`roleCode`、`enabled`。
+
+### PUT /api/users/{id}/enabled
+
+```json
+{ "enabled": false }
+```
+
+管理员不能禁用当前登录账号。
+
+### GET /api/users/technicians
+
+返回启用状态的技术员列表，供派单下拉框使用。
+
+## 设备状态
+
+### PUT /api/devices/{id}/status（ADMIN）
+
+```json
+{ "status": "REPAIRING" }
+```
+
+`status` 只能为 `NORMAL` / `FAULT` / `REPAIRING`。
