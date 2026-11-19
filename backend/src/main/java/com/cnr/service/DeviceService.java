@@ -22,4 +22,6 @@ public interface DeviceService extends IService<Device> {
     void delete(Long id);
 
     List<String> rooms();
+
+    DeviceVO updateStatus(Long id, String status);
 }

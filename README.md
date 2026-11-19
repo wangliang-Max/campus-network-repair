@@ -42,18 +42,25 @@
 ## 接口清单
 
 除 `/api/health`、`/api/auth/**` 外，其余接口都需要 `Authorization: Bearer <token>`。
+当前共 **27 个接口**。
 
 | 方法 | 路径 | 说明 | 角色 |
 | --- | --- | --- | --- |
 | GET | `/api/health` | 健康检查 | 公开 |
 | POST | `/api/auth/register` | 报障人注册，直接返回 JWT | 公开 |
 | POST | `/api/auth/login` | 登录 | 公开 |
+| GET | `/api/auth/me` | 当前登录用户信息 | 登录用户 |
+| PUT | `/api/auth/password` | 修改当前用户密码 | 登录用户 |
 | GET | `/api/devices` | 设备分页查询（keyword/roomName/status） | 登录用户 |
 | GET | `/api/devices/rooms` | 机房列表 | 登录用户 |
 | GET | `/api/devices/{id}` | 设备详情 | 登录用户 |
 | POST | `/api/devices` | 新增设备 | ADMIN |
 | PUT | `/api/devices/{id}` | 修改设备 | ADMIN |
 | DELETE | `/api/devices/{id}` | 删除设备（有报修记录时拒绝） | ADMIN |
+| PUT | `/api/devices/{id}/status` | 修改设备状态 | ADMIN |
+| GET | `/api/users` | 用户分页查询 | ADMIN |
+| PUT | `/api/users/{id}/enabled` | 启用/禁用用户 | ADMIN |
+| GET | `/api/users/technicians` | 技术员列表（派单选择） | 登录用户 |
 | POST | `/api/repair-orders` | 提交报修单（同人同设备未关闭时拒绝） | 登录用户 |
 | GET | `/api/repair-orders` | 分页查询（报障人只能看自己的） | 登录用户 |
 | GET | `/api/repair-orders/my` | 我的报修列表 | 登录用户 |
@@ -65,8 +72,9 @@
 | POST | `/api/repair-orders/{id}/supplement` | 补充信息：待补充 → 待受理 | 报障人本人 |
 | POST | `/api/repair-orders/{id}/confirm` | 验收：PASS 关闭 / FAIL 返工 | 报障人本人 |
 | GET | `/api/stats/overview` | 统计概览 | TECHNICIAN / ADMIN |
+| GET | `/api/stats/trend` | 近 N 天新增/关闭趋势 | TECHNICIAN / ADMIN |
 
-详细请求/响应示例见 [doc/api.md](doc/api.md)。
+详细请求/响应示例见 [docs/api.md](docs/api.md)。
 
 ## 状态机
 
@@ -88,7 +96,7 @@ REPAIRING(修复中) ◀── confirm:FAIL ── PENDING_CONFIRM(待确认) �
 
 ```text
 campus-network-repair/
-├── cnr-java/                          # Spring Boot 单模块
+├── backend/                           # Spring Boot 单模块
 │   ├── pom.xml
 │   └── src/
 │       ├── main/java/com/cnr/
@@ -106,7 +114,7 @@ campus-network-repair/
 │       │   └── mapper/RepairOrderMapper.xml
 │       └── test/java/com/cnr/common/OrderStatusTest.java
 ├── database/                          # schema.sql、seed.sql、ER 图
-├── doc/                               # 设计、接口、测试、贡献、答辩材料
+├── docs/                              # 设计、接口、测试、贡献、答辩材料
 ├── scripts/smoke-test.ps1             # 端到端冒烟测试脚本
 └── README.md
 ```
@@ -133,7 +141,7 @@ mysql --default-character-set=utf8mb4 -u root -p < database/seed.sql
 
 ### 2. 配置
 
-`cnr-java/src/main/resources/application-dev.yml` 已随仓库提供本地默认值
+`backend/src/main/resources/application-dev.yml` 已随仓库提供本地默认值
 （`localhost:3306/campus_repair`，`root` / `123456`），可直接启动。需要覆盖时用环境变量：
 
 | 变量名 | 说明 | 默认值 |
@@ -151,7 +159,7 @@ mysql --default-character-set=utf8mb4 -u root -p < database/seed.sql
 ### 3. 构建并启动
 
 ```bash
-cd cnr-java
+cd backend
 mvn clean package
 java -jar target/campus-repair-1.0.0.jar
 ```
@@ -182,7 +190,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 ## 测试
 
 ```bash
-cd cnr-java
+cd backend
 mvn test          # 状态机单元测试（4 条）
 ```
 
@@ -193,19 +201,20 @@ powershell -ExecutionPolicy Bypass -File scripts/smoke-test.ps1
 ```
 
 覆盖：登录/注册、401/403、设备 CRUD、状态机主流程与异常分支、并发受理、分页筛选、统计。
-测试记录见 [doc/business-flow-record.md](doc/business-flow-record.md)。
+测试记录见 [docs/business-flow-record.md](docs/business-flow-record.md)。
 
 ## 文档索引
 
 | 文档 | 内容 |
 | --- | --- |
-| [doc/database-design.md](doc/database-design.md) | ER 图、表结构、索引说明 |
-| [doc/api.md](doc/api.md) | 接口清单与请求/响应示例 |
-| [doc/business-flow-record.md](doc/business-flow-record.md) | 主流程/异常/越权测试记录 |
-| [doc/contribution-table.md](doc/contribution-table.md) | 分工与提交记录 |
-| [doc/ai-usage-statement.md](doc/ai-usage-statement.md) | AI 工具使用说明 |
-| [doc/defense-outline.md](doc/defense-outline.md) | 答辩提纲与常见问题 |
-| [doc/api-test/openapi.json](doc/api-test/openapi.json) | 导出的 OpenAPI 3 文档 |
+| [docs/database-design.md](docs/database-design.md) | ER 图、表结构、索引说明 |
+| [docs/requirements.md](docs/requirements.md) | 角色、功能、状态流转与页面清单 |
+| [docs/api.md](docs/api.md) | 接口清单与请求/响应示例 |
+| [docs/business-flow-record.md](docs/business-flow-record.md) | 主流程/异常/越权测试记录 |
+| [docs/contribution-table.md](docs/contribution-table.md) | 分工与提交记录 |
+| [docs/ai-usage-statement.md](docs/ai-usage-statement.md) | AI 工具使用说明 |
+| [docs/defense-outline.md](docs/defense-outline.md) | 答辩提纲与常见问题 |
+| [docs/api-doc/openapi.json](docs/api-doc/openapi.json) | 导出的 OpenAPI 3 文档 |
 
 ## 数据说明
 

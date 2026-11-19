@@ -85,4 +85,21 @@
         ORDER BY count DESC
     </select>
 
+    <select id="countCreatedByDay" resultType="com.cnr.vo.NameCountVO">
+        SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS name, COUNT(*) AS count
+        FROM repair_order
+        WHERE created_at &gt;= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+        GROUP BY name
+        ORDER BY name
+    </select>
+
+    <select id="countClosedByDay" resultType="com.cnr.vo.NameCountVO">
+        SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS name, COUNT(*) AS count
+        FROM status_log
+        WHERE to_status = 'CLOSED'
+          AND created_at &gt;= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+        GROUP BY name
+        ORDER BY name
+    </select>
+
 </mapper>

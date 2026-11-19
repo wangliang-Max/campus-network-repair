@@ -29,6 +29,7 @@ import com.cnr.vo.RepairOrderDetailVO;
 import com.cnr.vo.RepairOrderVO;
 import com.cnr.vo.StatusLogVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RepairOrderServiceImpl extends ServiceImpl<RepairOrderMapper, RepairOrder>
@@ -86,6 +88,8 @@ public class RepairOrderServiceImpl extends ServiceImpl<RepairOrderMapper, Repai
         save(order);
 
         insertStatusLog(order.getId(), null, OrderStatus.PENDING.name(), "报障人提交报修单");
+        log.info("创建报修单 id={} orderNo={} reporter={} device={}",
+                order.getId(), order.getOrderNo(), userId, order.getDeviceId());
         return buildDetail(order);
     }
 
@@ -171,6 +175,7 @@ public class RepairOrderServiceImpl extends ServiceImpl<RepairOrderMapper, Repai
         order.setStatus(OrderStatus.PENDING.name());
         updateOrderOrThrow(order);
         insertStatusLog(order.getId(), from, OrderStatus.PENDING.name(), "报障人补充故障信息，重新提交受理");
+        log.info("报修单补充信息 id={} operator={}", order.getId(), UserContext.getUserId());
         return buildDetail(order);
     }
 
@@ -203,6 +208,7 @@ public class RepairOrderServiceImpl extends ServiceImpl<RepairOrderMapper, Repai
         insertStatusLog(order.getId(), from, target.name(),
                 pass ? "报障人验收通过，工单关闭" : "报障人验收不通过，退回返工");
         syncDeviceStatus(order.getDeviceId(), target.name());
+        log.info("报修单验收 id={} result={} operator={}", order.getId(), dto.getResult(), UserContext.getUserId());
         return buildDetail(order);
     }
 
@@ -233,6 +239,8 @@ public class RepairOrderServiceImpl extends ServiceImpl<RepairOrderMapper, Repai
         repairHandleMapper.insert(handle);
 
         syncDeviceStatus(order.getDeviceId(), target.name());
+        log.info("报修单状态流转 id={} {} -> {} action={} operator={}",
+                order.getId(), from, target.name(), action, UserContext.getUserId());
         return buildDetail(order);
     }
 

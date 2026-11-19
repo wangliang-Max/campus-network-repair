@@ -31,4 +31,8 @@ public interface RepairOrderMapper extends BaseMapper<RepairOrder> {
     List<NameCountVO> countOpenByRoom();
 
     List<NameCountVO> countByStatus();
+
+    List<NameCountVO> countCreatedByDay(@Param("days") int days);
+
+    List<NameCountVO> countClosedByDay(@Param("days") int days);
 }

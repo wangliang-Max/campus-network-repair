@@ -14,9 +14,11 @@ import com.cnr.security.LoginUser;
 import com.cnr.service.AuthService;
 import com.cnr.vo.LoginVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -33,12 +35,14 @@ public class AuthServiceImpl implements AuthService {
         // 统一提示"用户名或密码错误"，避免暴露用户是否存在
         if (user == null || !user.getEnabled()
                 || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            log.warn("登录失败 username={}", dto.getUsername());
             throw new BusinessException(ErrorCode.BAD_REQUEST, "用户名或密码错误");
         }
         SysRole role = sysRoleMapper.selectById(user.getRoleId());
         String roleCode = role == null ? "REPORTER" : role.getRoleCode();
         LoginUser loginUser = new LoginUser(user.getId(), user.getUsername(), roleCode);
         String token = jwtUtil.generate(loginUser);
+        log.info("登录成功 userId={} username={} role={}", user.getId(), user.getUsername(), roleCode);
         return new LoginVO(token, user.getUsername(), user.getRealName(), roleCode);
     }
 
@@ -63,6 +67,7 @@ public class AuthServiceImpl implements AuthService {
         user.setRoleId(role.getId());
         user.setEnabled(true);
         sysUserMapper.insert(user);
+        log.info("用户注册 userId={} username={} role=REPORTER", user.getId(), user.getUsername());
 
         LoginUser loginUser = new LoginUser(user.getId(), user.getUsername(), "REPORTER");
         String token = jwtUtil.generate(loginUser);

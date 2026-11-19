@@ -16,12 +16,15 @@ import com.cnr.mapper.RepairOrderMapper;
 import com.cnr.service.DeviceService;
 import com.cnr.vo.DeviceVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> implements DeviceService {
@@ -63,6 +66,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         copy(dto, device);
         device.setCreatedAt(LocalDateTime.now().withNano(0));
         save(device);
+        log.info("新增设备 id={} code={} operator={}", device.getId(), device.getDeviceCode(), com.cnr.security.UserContext.getUserId());
         return toVO(device);
     }
 
@@ -75,6 +79,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         checkDeviceCodeUnique(dto.getDeviceCode(), id);
         copy(dto, device);
         updateById(device);
+        log.info("修改设备 id={} code={} operator={}", device.getId(), device.getDeviceCode(), com.cnr.security.UserContext.getUserId());
         return toVO(getById(id));
     }
 
@@ -91,6 +96,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                     "该设备已有 " + orderCount + " 条报修记录，不能删除");
         }
         removeById(id);
+        log.info("删除设备 id={} code={} operator={}", id, device.getDeviceCode(), com.cnr.security.UserContext.getUserId());
     }
 
     @Override
@@ -99,6 +105,22 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                 .select("DISTINCT room_name")
                 .orderByAsc("room_name"));
         return rooms.stream().map(String::valueOf).toList();
+    }
+
+    @Override
+    public DeviceVO updateStatus(Long id, String status) {
+        if (!Set.of("NORMAL", "FAULT", "REPAIRING").contains(status)) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "设备状态只能为 NORMAL / FAULT / REPAIRING");
+        }
+        Device device = getById(id);
+        if (device == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "设备不存在");
+        }
+        device.setStatus(status);
+        updateById(device);
+        log.info("设备状态变更 id={} code={} status={} operator={}",
+                id, device.getDeviceCode(), status, com.cnr.security.UserContext.getUserId());
+        return toVO(device);
     }
 
     private void checkDeviceCodeUnique(String deviceCode, Long excludeId) {

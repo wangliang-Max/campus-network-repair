@@ -4,6 +4,7 @@ import com.cnr.common.PageResult;
 import com.cnr.common.Result;
 import com.cnr.dto.DeviceQuery;
 import com.cnr.dto.DeviceSaveDTO;
+import com.cnr.dto.DeviceStatusDTO;
 import com.cnr.security.RequireRole;
 import com.cnr.service.DeviceService;
 import com.cnr.vo.DeviceVO;
@@ -71,5 +72,12 @@ public class DeviceController {
     public Result<Void> delete(@PathVariable Long id) {
         deviceService.delete(id);
         return Result.success();
+    }
+
+    @PutMapping("/{id}/status")
+    @RequireRole({"ADMIN"})
+    @Operation(summary = "修改设备状态（管理员）")
+    public Result<DeviceVO> updateStatus(@PathVariable Long id, @Valid @RequestBody DeviceStatusDTO dto) {
+        return Result.success(deviceService.updateStatus(id, dto.getStatus()));
     }
 }
