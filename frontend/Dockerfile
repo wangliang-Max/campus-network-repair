@@ -1,7 +1,10 @@
-FROM node:20-alpine AS build
+FROM alpine:3.20 AS build
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk add --no-cache nodejs npm
 WORKDIR /app
 COPY package*.json ./
-RUN npm config set registry https://registry.npmmirror.com && npm ci
+RUN npm config set registry https://registry.npmmirror.com \
+    && npm ci --no-audit --no-fund
 COPY . .
 RUN npm run build
 
