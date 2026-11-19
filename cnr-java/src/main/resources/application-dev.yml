@@ -1,0 +1,16 @@
+# 开发环境配置：数据库与密钥走环境变量，未设置时使用本地默认值
+# 注意：本文件被根目录 .gitignore 忽略，未提交到仓库；换机器/重新 clone 后需要重新创建
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: "${DB_URL:jdbc:mysql://localhost:3306/campus_repair?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}"
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:123456}
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+jwt:
+  secret: ${JWT_SECRET:campus-repair-jwt-secret-key-2026-please-change}
+  expire-hours: ${JWT_EXPIRE_HOURS:24}

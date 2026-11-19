@@ -8,6 +8,5 @@ target/
 *.log
 logs/
 application-local.yml
-application-dev.yml
 *.env
 .DS_Store
