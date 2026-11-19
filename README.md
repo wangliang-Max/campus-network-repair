@@ -16,6 +16,7 @@
 - **查询统计**：多表 JOIN 分页查询、关键字/状态/机房筛选、平均修复时长与按机房分组
 - **接口文档**：Knife4j（OpenAPI 3），启动后访问 `/doc.html`
 - **前端**：Vue 3 + Vite + Element Plus，10 个页面、5 个复用组件、角色菜单、路由守卫
+- **部署**：Docker 多阶段镜像、Compose 三服务、Kubernetes（Deployment/Service/Ingress/HPA/PVC）
 
 ## 当前进度
 
@@ -28,7 +29,7 @@
 | 4 | 设备 CRUD、状态机、状态日志、乐观锁、越权校验 | 已完成 |
 | 5 | 多表 JOIN、条件分页、统计接口 | 已完成 |
 | 6 | 接口文档、测试记录、贡献说明、AI 使用声明 | 已完成 |
-| 7 | Docker 镜像、Compose、Kubernetes、答辩 PPT 与视频 | 进行中 |
+| 7 | Docker 镜像、Compose、Kubernetes、答辩 PPT 与视频 | Docker/K8s 文件已完成，集群证据待采集 |
 
 ## 技术栈
 
@@ -120,7 +121,10 @@ campus-network-repair/
 │   ├── src/                           # api / components / router / stores / views
 │   ├── nginx/                         # 生产环境反向代理模板
 │   └── Dockerfile                     # Node 构建 -> Nginx
-├── scripts/smoke-test.ps1             # 端到端冒烟测试脚本
+├── compose.yaml                       # frontend / backend / mysql 三服务
+├── k8s/                               # Namespace、ConfigMap、Secret、PV/PVC、Deployment、Service、Ingress、HPA
+├── evidence/                          # 镜像、Compose、K8s、日志、发布回滚、HPA、故障工单证据
+├── scripts/                           # 冒烟测试、证据采集、F3 故障演练
 └── README.md
 ```
 
@@ -234,11 +238,35 @@ powershell -ExecutionPolicy Bypass -File scripts/smoke-test.ps1
 | [docs/defense-outline.md](docs/defense-outline.md) | 答辩提纲与常见问题 |
 | [docs/api-doc/openapi.json](docs/api-doc/openapi.json) | 导出的 OpenAPI 3 文档 |
 | [docs/screenshots/frontend/](docs/screenshots/frontend/) | 前端页面截图 |
+| [docs/runbook.md](docs/runbook.md) | Docker / Kubernetes 部署、发布回滚、HPA 与排查 |
+| [docs/incident-record.md](docs/incident-record.md) | G18 F3 镜像故障工单 |
 
 ## 数据说明
 
 - 全部为模拟数据，不含真实个人信息、真实密码或密钥
 - 默认密码与 JWT 密钥仅用于本地开发，部署时通过环境变量覆盖
+
+## Docker 与 Kubernetes
+
+```bash
+# Compose：只暴露前端 8080
+cp .env.example .env
+docker compose up -d --build
+docker compose ps
+
+# 镜像
+docker build -t g18-api:v1 ./backend
+docker build -t g18-web:v1 ./frontend
+
+# Kubernetes（先准备 Secret，再应用全部资源）
+cp k8s/02-secret.example.yaml /tmp/g18-secret.yaml
+kubectl apply -f /tmp/g18-secret.yaml
+kubectl apply -f k8s/
+kubectl get pods,svc,pvc,hpa -n enterprise-g18
+```
+
+详细步骤见 [docs/runbook.md](docs/runbook.md)；证据采集使用
+`scripts/capture-evidence.sh` 与 `scripts/incident-f3.sh`。
 
 ## 版本管理
 
