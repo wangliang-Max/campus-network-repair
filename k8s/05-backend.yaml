@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: g18-backend
+  namespace: enterprise-g18
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: g18-backend
+  template:
+    metadata:
+      labels:
+        app: g18-backend
+    spec:
+      containers:
+        - name: backend
+          image: g18-api:v1
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: g18-config
+            - secretRef:
+                name: g18-secret
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 25
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: g18-backend
+  namespace: enterprise-g18
+spec:
+  selector:
+    app: g18-backend
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

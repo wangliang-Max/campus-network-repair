@@ -1,0 +1,76 @@
+name: campus-repair
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: g18-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-123456}
+      MYSQL_DATABASE: campus_repair
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${DB_PASSWORD:-123456}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    networks:
+      - cnr-net
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+    image: g18-api:v1
+    container_name: g18-backend
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/campus_repair?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:-123456}
+      JWT_SECRET: ${JWT_SECRET:-campus-repair-jwt-secret-key-2026-please-change}
+      SPRING_PROFILES_ACTIVE: dev
+      TZ: Asia/Shanghai
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8080/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    expose:
+      - "8080"
+    networks:
+      - cnr-net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    image: g18-web:v1
+    container_name: g18-frontend
+    environment:
+      BACKEND_HOST: backend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    networks:
+      - cnr-net
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+
+networks:
+  cnr-net:
+    driver: bridge
