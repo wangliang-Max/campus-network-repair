@@ -49,8 +49,10 @@
 | `a241852` | docs(api)：Knife4j 27 接口截图 |
 | `83f2c39` | fix(deploy)：前端预构建 dist，Compose 端口 8081 |
 | `913054f` | test(deploy)：Compose、K8s、发布回滚、HPA 与 F3 证据 |
+| `7c1c4ad` | docs：课程设计报告、运行记录与贡献表更新 |
+| `fd56251` | docs：答辩 PPT 与报告链接 |
 
-仓库共 27 条提交，全部由王亮完成。
+仓库共 29 条提交，全部由王亮完成。
 
 ## 说明
 

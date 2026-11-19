@@ -243,6 +243,7 @@ powershell -ExecutionPolicy Bypass -File scripts/smoke-test.ps1
 | [docs/operation-record.md](docs/operation-record.md) | 镜像、Compose、K8s、HPA、发布回滚的实际运行记录 |
 | [docs/report/T05-课程设计报告-王亮.docx](docs/report/T05-课程设计报告-王亮.docx) | 课程设计报告（Word） |
 | [docs/report/T05-课程设计报告-王亮.pdf](docs/report/T05-课程设计报告-王亮.pdf) | 课程设计报告（PDF） |
+| [docs/report/T05-答辩PPT.pptx](docs/report/T05-答辩PPT.pptx) | 答辩 PPT（15 页，覆盖前端与 Docker） |
 
 ## 数据说明
 

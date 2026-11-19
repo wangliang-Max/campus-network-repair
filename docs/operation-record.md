@@ -75,9 +75,10 @@ kubectl get pods,svc,endpoints,pvc,hpa,ingress -n enterprise-g18
 | 10s | `cpu: 48%/60%`，replicas 2 |
 | 20s | `cpu: 223%/60%`，replicas 4 |
 | 70s | `cpu: 56%/60%`，replicas 4 |
+| 停止压测后约 10 分钟 | `cpu: 2%/60%`，replicas 回到 2 |
 
 扩容后 4 个 backend Pod 的 CPU 约 90–122m，说明 `requests.cpu: 200m` 是利用率计算的前提。
-证据：`evidence/06-hpa/load-test.txt`、`hpa-after.txt`。
+证据：`evidence/06-hpa/load-test.txt`、`hpa-after.txt`、`scale-down.txt`。
 
 ## 6. F3 故障工单
 
