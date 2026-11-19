@@ -12,6 +12,8 @@
 | 设备管理 | 王亮 | 100% | 设备 CRUD、机房筛选、删除保护 |
 | 报修单状态机 | 王亮 | 100% | 六状态流转、非法流转拒绝、状态日志、处理记录、乐观锁 |
 | 查询与统计 | 王亮 | 100% | 多表 JOIN 分页、条件筛选、统计概览 |
+| 前端 | 王亮 | 100% | Vue 3 前端 10 个页面、5 个复用组件、路由守卫、Pinia、Axios |
+| 容器化与运维 | 王亮 | 100% | Dockerfile、Compose、K8s 资源、发布回滚、HPA、F3 故障工单 |
 | 测试与文档 | 王亮 | 100% | 单元测试、端到端冒烟、接口与流程文档 |
 
 ## 提交记录
@@ -32,6 +34,23 @@
 | `b29e5c8` | feat(flow)：报修单状态机、状态日志与乐观锁 |
 | `19a0ef2` | feat(stats)：统计概览 |
 | `ff498a7` | test(flow)：状态机单元测试 |
+| `56f0080` | docs(api)：接口说明、OpenAPI 导出与端到端冒烟脚本 |
+| `95e7959` | docs：测试记录、贡献表、AI 使用声明与答辩提纲 |
+| `f3eff4b` | refactor(layout)：源码目录改为 backend/，文档目录改为 docs/ |
+| `1245748` | feat(user)：当前用户、改密、用户管理、技术员列表、设备状态与趋势接口 |
+| `eae9f7a` | feat(seed)：补充 5 条已关闭历史工单，主要表均不少于 10 条 |
+| `9c94273` | docs(api)：需求说明、27 接口 OpenAPI 与 Postman 集合 |
+| `3712990` | feat(frontend)：Vue 3 前端 10 个页面、5 个复用组件 |
+| `09ea9e4` | fix(seed)：补充待受理工单的初始状态日志 |
+| `730d442` | docs(frontend)：前端设计说明、页面截图与操作记录 |
+| `f681978` | feat(deploy)：Docker 镜像、Compose 三服务与 G18 K8s 资源 |
+| `54a2c61` | docs(deploy)：部署手册、F3 故障工单与证据采集脚本 |
+| `e2f6624` | build(deploy)：Alpine 多阶段构建，成功构建 g18-api:v1 |
+| `a241852` | docs(api)：Knife4j 27 接口截图 |
+| `83f2c39` | fix(deploy)：前端预构建 dist，Compose 端口 8081 |
+| `913054f` | test(deploy)：Compose、K8s、发布回滚、HPA 与 F3 证据 |
+
+仓库共 27 条提交，全部由王亮完成。
 
 ## 说明
 

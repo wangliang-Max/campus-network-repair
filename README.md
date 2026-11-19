@@ -29,7 +29,7 @@
 | 4 | 设备 CRUD、状态机、状态日志、乐观锁、越权校验 | 已完成 |
 | 5 | 多表 JOIN、条件分页、统计接口 | 已完成 |
 | 6 | 接口文档、测试记录、贡献说明、AI 使用声明 | 已完成 |
-| 7 | Docker 镜像、Compose、Kubernetes、答辩 PPT 与视频 | Docker/K8s 文件已完成，集群证据待采集 |
+| 7 | Docker 镜像、Compose、Kubernetes、答辩 PPT 与视频 | Docker/K8s 部署与证据已完成，PPT/视频待完成 |
 
 ## 技术栈
 
@@ -240,6 +240,9 @@ powershell -ExecutionPolicy Bypass -File scripts/smoke-test.ps1
 | [docs/screenshots/frontend/](docs/screenshots/frontend/) | 前端页面截图 |
 | [docs/runbook.md](docs/runbook.md) | Docker / Kubernetes 部署、发布回滚、HPA 与排查 |
 | [docs/incident-record.md](docs/incident-record.md) | G18 F3 镜像故障工单 |
+| [docs/operation-record.md](docs/operation-record.md) | 镜像、Compose、K8s、HPA、发布回滚的实际运行记录 |
+| [docs/report/T05-课程设计报告-王亮.docx](docs/report/T05-课程设计报告-王亮.docx) | 课程设计报告（Word） |
+| [docs/report/T05-课程设计报告-王亮.pdf](docs/report/T05-课程设计报告-王亮.pdf) | 课程设计报告（PDF） |
 
 ## 数据说明
 
