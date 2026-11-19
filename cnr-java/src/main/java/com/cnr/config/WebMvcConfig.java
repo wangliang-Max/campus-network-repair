@@ -1,6 +1,7 @@
 package com.cnr.config;
 
 import com.cnr.security.AuthInterceptor;
+import com.cnr.security.RoleInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -15,11 +16,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
+    private final RoleInterceptor roleInterceptor;
 
     /** 无需登录即可访问的路径（白名单） */
     private static final String[] WHITE_LIST = {
             "/api/health",
             "/api/auth/login",
+            "/api/auth/register",
             "/doc.html",
             "/webjars/**",
             "/v3/api-docs/**",
@@ -31,6 +34,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
+                .order(1)
+                .addPathPatterns("/**")
+                .excludePathPatterns(WHITE_LIST);
+        // 角色校验必须在认证之后，才能拿到 UserContext
+        registry.addInterceptor(roleInterceptor)
+                .order(2)
                 .addPathPatterns("/**")
                 .excludePathPatterns(WHITE_LIST);
     }

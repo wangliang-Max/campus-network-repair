@@ -2,6 +2,7 @@ package com.cnr.controller;
 
 import com.cnr.common.Result;
 import com.cnr.dto.LoginDTO;
+import com.cnr.dto.RegisterDTO;
 import com.cnr.service.AuthService;
 import com.cnr.vo.LoginVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,5 +29,11 @@ public class AuthController {
     @Operation(summary = "登录，返回 JWT")
     public Result<LoginVO> login(@Valid @RequestBody LoginDTO dto) {
         return Result.success(authService.login(dto));
+    }
+
+    @PostMapping("/register")
+    @Operation(summary = "报障人自助注册，成功后直接返回 JWT")
+    public Result<LoginVO> register(@Valid @RequestBody RegisterDTO dto) {
+        return Result.success(authService.register(dto));
     }
 }

@@ -3,6 +3,7 @@ package com.cnr.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cnr.common.ErrorCode;
 import com.cnr.dto.LoginDTO;
+import com.cnr.dto.RegisterDTO;
 import com.cnr.entity.SysRole;
 import com.cnr.entity.SysUser;
 import com.cnr.exception.BusinessException;
@@ -39,5 +40,32 @@ public class AuthServiceImpl implements AuthService {
         LoginUser loginUser = new LoginUser(user.getId(), user.getUsername(), roleCode);
         String token = jwtUtil.generate(loginUser);
         return new LoginVO(token, user.getUsername(), user.getRealName(), roleCode);
+    }
+
+    @Override
+    public LoginVO register(RegisterDTO dto) {
+        Long exists = sysUserMapper.selectCount(
+                new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, dto.getUsername()));
+        if (exists > 0) {
+            throw new BusinessException(ErrorCode.BUSINESS_ERROR, "用户名已存在");
+        }
+        SysRole role = sysRoleMapper.selectOne(
+                new LambdaQueryWrapper<SysRole>().eq(SysRole::getRoleCode, "REPORTER"));
+        if (role == null) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+
+        SysUser user = new SysUser();
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setRealName(dto.getRealName());
+        user.setPhone(dto.getPhone());
+        user.setRoleId(role.getId());
+        user.setEnabled(true);
+        sysUserMapper.insert(user);
+
+        LoginUser loginUser = new LoginUser(user.getId(), user.getUsername(), "REPORTER");
+        String token = jwtUtil.generate(loginUser);
+        return new LoginVO(token, user.getUsername(), user.getRealName(), "REPORTER");
     }
 }
