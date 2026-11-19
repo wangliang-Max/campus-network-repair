@@ -249,13 +249,15 @@ powershell -ExecutionPolicy Bypass -File scripts/smoke-test.ps1
 ## Docker 与 Kubernetes
 
 ```bash
-# Compose：只暴露前端 8080
+# Compose：只暴露前端 8081
+# 前端镜像依赖 dist/，先执行：cd frontend && npm ci && npm run build
 cp .env.example .env
 docker compose up -d --build
 docker compose ps
 
 # 镜像
 docker build -t g18-api:v1 ./backend
+cd frontend && npm ci && npm run build && cd ..
 docker build -t g18-web:v1 ./frontend
 
 # Kubernetes（先准备 Secret，再应用全部资源）
