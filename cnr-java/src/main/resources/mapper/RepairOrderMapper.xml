@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnr.mapper.RepairOrderMapper">
+
+    <sql id="baseSelect">
+        SELECT o.id,
+               o.order_no,
+               o.reporter_id,
+               u.real_name AS reporter_name,
+               o.device_id,
+               d.device_name,
+               d.room_name,
+               o.fault_desc,
+               o.priority,
+               o.status,
+               o.created_at,
+               o.updated_at
+        FROM repair_order o
+                 JOIN sys_user u ON u.id = o.reporter_id
+                 JOIN device d ON d.id = o.device_id
+    </sql>
+
+    <select id="selectPageVO" resultType="com.cnr.vo.RepairOrderVO">
+        <include refid="baseSelect"/>
+        <where>
+            <if test="reporterId != null">
+                AND o.reporter_id = #{reporterId}
+            </if>
+            <if test="q.status != null and q.status != ''">
+                AND o.status = #{q.status}
+            </if>
+            <if test="q.priority != null and q.priority != ''">
+                AND o.priority = #{q.priority}
+            </if>
+            <if test="q.roomName != null and q.roomName != ''">
+                AND d.room_name = #{q.roomName}
+            </if>
+            <if test="q.keyword != null and q.keyword != ''">
+                AND (o.order_no LIKE CONCAT('%', #{q.keyword}, '%')
+                    OR o.fault_desc LIKE CONCAT('%', #{q.keyword}, '%')
+                    OR d.device_name LIKE CONCAT('%', #{q.keyword}, '%')
+                    OR u.real_name LIKE CONCAT('%', #{q.keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY o.created_at DESC, o.id DESC
+    </select>
+
+    <select id="selectDetailVO" resultType="com.cnr.vo.RepairOrderVO">
+        <include refid="baseSelect"/>
+        WHERE o.id = #{id}
+    </select>
+
+    <select id="selectByReporter" resultType="com.cnr.vo.RepairOrderVO">
+        <include refid="baseSelect"/>
+        WHERE o.reporter_id = #{reporterId}
+        ORDER BY o.created_at DESC, o.id DESC
+    </select>
+
+    <select id="countOpen" resultType="long">
+        SELECT COUNT(*)
+        FROM repair_order
+        WHERE status &lt;&gt; 'CLOSED'
+    </select>
+
+    <select id="avgRepairHours" resultType="java.math.BigDecimal">
+        SELECT ROUND(AVG(TIMESTAMPDIFF(MINUTE, o.created_at, l.created_at)) / 60, 2)
+        FROM repair_order o
+                 JOIN status_log l ON l.order_id = o.id AND l.to_status = 'CLOSED'
+    </select>
+
+    <select id="countOpenByRoom" resultType="com.cnr.vo.NameCountVO">
+        SELECT d.room_name AS name, COUNT(*) AS count
+        FROM repair_order o
+                 JOIN device d ON d.id = o.device_id
+        WHERE o.status &lt;&gt; 'CLOSED'
+        GROUP BY d.room_name
+        ORDER BY count DESC
+    </select>
+
+    <select id="countByStatus" resultType="com.cnr.vo.NameCountVO">
+        SELECT status AS name, COUNT(*) AS count
+        FROM repair_order
+        GROUP BY status
+        ORDER BY count DESC
+    </select>
+
+</mapper>

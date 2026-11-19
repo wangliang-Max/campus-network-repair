@@ -43,6 +43,15 @@ public class RepairOrderVO {
     @Schema(description = "单据状态")
     private String status;
 
+    @Schema(description = "单据状态中文名")
+    private String statusLabel;
+
+    @Schema(description = "优先级中文名")
+    private String priorityLabel;
+
     @Schema(description = "提交时间")
     private LocalDateTime createdAt;
+
+    @Schema(description = "最后更新时间")
+    private LocalDateTime updatedAt;
 }
